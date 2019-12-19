@@ -1,6 +1,6 @@
 # Meetup
-Boston, MA Developers Group
-Incapsulate
+Boston, MA Developers Group 
+@Incapsulate, 
 12/19/2019
 
 # Description
