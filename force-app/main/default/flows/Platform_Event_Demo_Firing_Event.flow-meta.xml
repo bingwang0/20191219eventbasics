@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <assignments>
+        <name>Set_Event_fields</name>
+        <label>Set Event fields</label>
+        <locationX>547</locationX>
+        <locationY>221</locationY>
+        <assignmentItems>
+            <assignToReference>Event.Has_Shipped__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Event.Order_Number__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>GeneratingOrderNumber</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Event.Account_Name__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>GenePoint</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Fire_Event</targetReference>
+        </connector>
+    </assignments>
+    <decisions>
+        <name>If_checked</name>
+        <label>If checked</label>
+        <locationX>210</locationX>
+        <locationY>222</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>box_checked_to_create_event</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Publish_Order_Event</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Set_Event_fields</targetReference>
+            </connector>
+            <label>box checked to create event</label>
+        </rules>
+    </decisions>
+    <formulas>
+        <name>GeneratingOrderNumber</name>
+        <dataType>String</dataType>
+        <expression>RIGHT(text({!$Flow.CurrentDateTime}),10)</expression>
+    </formulas>
+    <interviewLabel>Platform Event Demo (Firing Event) {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Platform Event Demo (Firing Event)</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <recordCreates>
+        <name>Fire_Event</name>
+        <label>Fire Event</label>
+        <locationX>547</locationX>
+        <locationY>50</locationY>
+        <connector>
+            <targetReference>message_thank_you</targetReference>
+        </connector>
+        <inputReference>Event</inputReference>
+    </recordCreates>
+    <screens>
+        <name>message_thank_you</name>
+        <label>message thank you</label>
+        <locationX>712</locationX>
+        <locationY>50</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>created</name>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;Platform event created.&lt;/span&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;&lt;span class=&quot;ql-cursor&quot;&gt;﻿&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Platform_Event_Demo</name>
+        <label>Platform Event Demo</label>
+        <locationX>218</locationX>
+        <locationY>50</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>If_checked</targetReference>
+        </connector>
+        <fields>
+            <name>Publish_Order_Event</name>
+            <dataType>Boolean</dataType>
+            <fieldText>Publish Order Event</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>true</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <start>
+        <locationX>50</locationX>
+        <locationY>50</locationY>
+        <connector>
+            <targetReference>Platform_Event_Demo</targetReference>
+        </connector>
+    </start>
+    <status>Active</status>
+    <variables>
+        <name>Event</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Order_Event__e</objectType>
+    </variables>
+</Flow>
